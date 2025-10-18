@@ -1,4 +1,3 @@
-/* style.css の中身（例） */
 
 body {
   font-family: 'M PLUS 1', sans-serif;
@@ -13,6 +12,13 @@ h1 {
   margin-bottom: 16px;
 }
 
+@media (max-width: 600px) {
+  p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+  }
+}
+
 .level-card {
   background-color: #ffffff;
   border-radius: 16px;
@@ -20,10 +26,10 @@ h1 {
   padding: 20px;
   max-width: 600px;
   margin: 30px auto;
-  display: none; /* ← 最初は非表示！ */
+  display: none; 
 }
 
-/* ボタン */
+
 button {
   background-color: #e0f7fa;
   color: #006064;
@@ -38,6 +44,18 @@ button {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   transition: transform 0.1s ease-in-out;
 }
+
+@media (max-width: 600px) {
+  button {
+    font-size: 1.4rem;         /* 文字を大きく！ */
+    padding: 1.2rem 2rem;      /* タッチ領域を広げる！ */
+    min-height: 56px;          /* Google推奨サイズ以上に！ */
+    min-width: 90%;            /* 横幅も広げて押しやすく！ */
+    margin: 1rem auto;         /* 余白＆中央寄せ */
+    display: block;            /* 横並びを防ぐ */
+  }
+}
+
 
 button:hover {
   transform: scale(1.05);
@@ -59,9 +77,26 @@ button:hover {
   margin-bottom: 24px; /* 下のスキマを調整 */
 }
 
+@media (max-width: 600px) {
+  #question {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  #questionRow {
+    flex-direction: column; /* ✅ スマホでは縦並びにする！ */
+    gap: 8px;
+  }
+}
+
 #replayBtn {
   font-size: 1.2em;
-  padding: 8px 16px;
+  padding: 8px;
+  width: 48px;
+  height: 48px;
+  min-width: unset;
+  min-height: unset;
+  border-radius: 50%;
 }
 
 #hintImage {
