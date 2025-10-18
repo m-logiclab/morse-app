@@ -1,0 +1,147 @@
+/* style.css の中身（例） */
+
+body {
+  font-family: 'M PLUS 1', sans-serif;
+  background-color: #f0fbfc;
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  font-family: 'Kosugi Maru', sans-serif;
+  font-size: 1.8em;
+  margin-bottom: 16px;
+}
+
+.level-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  max-width: 600px;
+  margin: 30px auto;
+  display: none; /* ← 最初は非表示！ */
+}
+
+/* ボタン */
+button {
+  background-color: #e0f7fa;
+  color: #006064;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  margin: 6px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  min-width: 100px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.1s ease-in-out;
+}
+
+button:hover {
+  transform: scale(1.05);
+  background-color: #b2ebf2;
+}
+
+#question {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #004d40;
+}
+
+#questionRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px; /* ← ボタンとの間隔 */
+  margin-bottom: 24px; /* 下のスキマを調整 */
+}
+
+#replayBtn {
+  font-size: 1.2em;
+  padding: 8px 16px;
+}
+
+#hintImage {
+  display: none;
+}
+
+#choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+#result {
+  min-height: 1.5em; /* ← 表示領域を確保！ */
+  visibility: hidden; /* ← 最初は非表示だけどスペースは残る！ */
+  margin-bottom: 12px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #006064;
+}
+
+
+.back-home {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.back-home button {
+  background-color: #e0f7fa;
+  color: #006064;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.1s ease-in-out;
+}
+
+.back-home button:hover {
+  transform: scale(1.05);
+  background-color: #ffe0b2;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  align-items: flex-start;
+  padding-top: 100px;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 16px;
+  font-size: 1.4em;
+  color: #006064;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  display: flex;              /* ← これが必要！ */
+  flex-direction: column;     /* ← 縦並びにする！ */
+  align-items: center;        /* ← ボタンを中央揃えにする */
+  gap: 10px;                  /* ← ボタンの間隔をあける */
+}
+
+.modal-content button {
+  width: 220px;         /* ← 好きな幅に調整できる！ */
+  font-size: 1em;
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: 8px;
+  text-align: center;
+}

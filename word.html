@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>モールスチャレンジ！：単語クイズ</title>
+
+  <!-- フォント読み込み -->
+  <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=M+PLUS+1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>🔤 モールスチャレンジ！：単語クイズ</h1>
+  <p>再生されるモールス音と表示された符号（・－）から、対応する単語を選んでください。</p>
+  <button id="startBtn" onclick="startGame()">ゲーム開始</button>
+
+  <div class="level-card" style="display: none;">
+    <div id="questionRow">
+      <p id="question"></p>
+      <button id="replayBtn" onclick="replayMorse()" disabled>🔈</button>
+    </div>
+
+    <p id="result"></p>
+    <div id="choices"></div>
+
+    <p id="score"></p>
+
+    <button onclick="toggleHint()">🔍 ヒント</button>
+    <div id="hintImage">
+      <!-- <img src="morse_tree_lv1.png" alt="モールスヒント"> -->
+      <img id="hintImg" src="" alt="モールスヒント">
+    </div>
+  </div>
+
+  <div class="back-home">
+    <button onclick="location.href='index.html'">🏠 ホームにもどる</button>
+  </div>
+
+  <div id="winModal" class="modal">
+  <div class="modal-content">
+    🎉 クリア！おめでとう！<br><br>
+    <button onclick="location.reload()">🔁 もういちど</button>
+    <button onclick="location.href='index.html'">🏠 ホームにもどる</button>
+    <!-- 単語クイズボタンはJSで追加 -->
+  </div>
+
+  <script>
+    const totalQuestions = 6;
+    const context = new (window.AudioContext || window.webkitAudioContext)();
+    const unitTime = 1200 / 15;
+    const frequency = 600;
+
+    const morseMap = {
+      'A': '.-',    'B': '-...',  'C': '-.-.',  'D': '-..',
+      'E': '.',     'F': '..-.',  'G': '--.',   'H': '....',
+      'I': '..',    'J': '.---',  'K': '-.-',   'L': '.-..',
+      'M': '--',    'N': '-.',    'O': '---',   'P': '.--.',
+      'Q': '--.-',  'R': '.-.',   'S': '...',   'T': '-',
+      'U': '..-',   'V': '...-',  'W': '.--',   'X': '-..-',
+      'Y': '-.--',  'Z': '--..'
+    };
+    const levelData = {
+      level1: {//EIATNM
+        wordList: [
+        "AM", "AN", "AT", "IN", "IT", "ME", "AIM", "ANT", "EAT", "INN", "MAN", "MAT", "MEN", "NET", "TAN",
+        "TEA", "TEN", "TIE", "TIN", "EMIT", "ITEM", "MAIN", "MAMA", "MANE", "MATE", "MEAN", "MEAT", "MEET", "MINE", "MINI",
+        "MINT", "MITT", "NAME", "NANA", "NEAT", "NINE", "TAME", "TEAM", "TEEN", "TENT", "TIME", "TINT"
+        ]
+      },
+      level2: {//EIASURW
+        wordList: [
+        "AS", "ER", "EU", "IS", "US", "WE", "AIR", "ASS", "AWE", "EAR", "ERA", "ERR", "RAW", "SAW", "SEA",
+        "SEE", "SEW", "SIR", "SUE", "USE", "WAR", "WEE", "AREA", "ASIA", "AURA", "EASE", "IRIS", "RARE", "REAR", "RISE",
+        "SURE", "USER", "WARE", "WEAR", "WIRE", "WISE"
+        ]
+      },
+      level3: {//EIASURWTNM
+        wordList: [
+        "AM", "AN", "AS", "AT", "ER", "EU", "IN", "IS", "IT", "ME", "MR", "MS", "UM", "US", "WE",
+        "AIM", "AIR", "ANT", "ARM", "ART", "ASS", "AWE", "EAR", "EAT", "ERA", "ERR", "INN", "ITS", "MAN", "MAR",
+        "MAT", "MEN", "MRS", "MUM", "NET", "NEW", "NUN", "NUT", "RAT", "RAW", "RIM", "RUN", "SAW", "SEA", "SEE",
+        "SET", "SEW", "SIN", "SIR", "SIT", "SUE", "SUM", "SUN", "TAN", "TEA", "TEN", "TIE", "TIN", "USE", "WAR",
+        "WEE", "WET", "WIN", "WIT", "MUST", "RUST", "STUN", "TURN"
+        ]
+      },
+      level4: {//TNMDKGO
+        wordList: [
+        "DO", "GO", "KM", "NO", "OK", "ON", "TO", "DOG", "DON", "DOT", "GOD", "MOM", "NOD", "NOT", "ODD",
+        "TON", "TOO", "DOOM", "GONG", "GOOD", "KNOT", "KOOK", "MONK", "MOOD", "MOON", "NOOK", "NOON", "ONTO"
+        ]
+      },
+      level5: {//TNMDKGOEIA
+        wordList: [
+        "AD", "DO", "GO", "ID", "OK", "ADD", "AGE", "AGO", "AID", "DAD", "DIE", "DIG", "DOG", "EGG", "EGO",
+        "GOD", "KID", "OAK", "ODD", "AGED", "AIDE", "DEAD", "DEED", "EDGE", "GOOD", "IDEA", "KOOK"
+        ]
+      },
+      level6: {//EIASURWTNMDKGO
+        wordList: [
+        "AD", "AM", "AN", "AS", "AT", "DO", "ER", "EU", "GO", "ID", "IN", "IS", "IT", "KM", "ME",
+        "MR", "MS", "NO", "OK", "ON", "OR", "SO", "TO", "UM", "US", "WE", "ADD", "AGE", "AGO", "AID",
+        "AIM", "AIR", "AND", "ANT", "ARM", "ART", "ASK", "ASS", "AWE", "DAD", "DAM", "DEW", "DIE", "DIG", "DIM",
+        "DNA", "DOG", "DON", "DOT", "DUE", "DUO", "EAR", "EAT", "EGG", "EGO", "END", "ERA", "ERR", "GAS", "GEM",
+        "GET", "GOD", "GUM", "GUN", "GUT", "INK", "INN", "ITS", "KID", "KIN", "KIT", "MAD", "MAN", "MAR", "MAT",
+        "MEN", "MID", "MOM", "MRS", "MUD", "MUG", "MUM", "NAG", "NET", "NEW", "NOD", "NOR", "NOT", "NOW", "NUN",
+        "NUT", "OAK", "OAR", "OAT", "ODD", "ONE", "ORE", "OUR", "OUT", "OWE", "OWN", "RAG", "RAT", "RAW", "RED",
+        "RID", "RIM", "ROD", "ROT", "ROW", "RUG", "RUN", "SAD", "SAW", "SEA", "SEE", "SET", "SEW", "SIN", "SIR",
+        "SIT", "SKI", "SOD", "SON", "SOW", "SUE", "SUM", "SUN", "TAG", "TAN", "TEA", "TEN", "TIE", "TIN", "TOE",
+        "TON", "TOO", "TOW", "TUG", "TWO", "USE", "WAR", "WED", "WEE", "WET", "WIN", "WIT", "WOE", "WOO", "WOW",
+        "AGED", "AIDE", "AIDS", "AKIN", "AMID", "ANEW", "AREA", "ARID", "ASIA", "ATOM", "AUNT", "AURA", "AUTO", "DAMN", "DARE",
+        "DARK", "DART", "DATA", "DATE", "DAWN", "DEAD", "DEAN", "DEAR", "DEED", "DEEM", "DEER", "DEMO", "DESK", "DIET", "DIME",
+        "DINE", "DIRE", "DIRT", "DISK", "DOOM", "DOOR", "DOSE", "DOWN", "DRAG", "DRAW", "DRUG", "DRUM", "DUDE", "DUKE", "DUNE",
+        "DUSK", "DUST", "EARN", "EASE", "EAST", "EDGE", "EDIT", "EMIT", "EURO", "GAIN", "GAME", "GANG", "GATE", "GEAR", "GENE",
+        "GERM", "GNAW", "GOAT", "GONE", "GONG", "GOOD", "GOWN", "GRAM", "GRID", "GRIM", "GRIN", "GRIT", "GROW", "GURU", "GUST",
+        "IDEA", "INTO", "IRIS", "IRON", "ITEM", "KEEN", "KIND", "KING", "KISS", "KITE", "KNEE", "KNIT", "KNOT", "KNOW", "KOOK",
+        "MADE", "MAID", "MAIN", "MAKE", "MAMA", "MANE", "MARE", "MARK", "MARS", "MASK", "MASS", "MATE", "MEAN", "MEAT", "MEET",
+        "MEMO", "MEND", "MENU", "MERE", "MESS", "MIND", "MINE", "MINI", "MINT", "MISS", "MIST", "MITT", "MOAN", "MODE", "MONK",
+        "MOOD", "MOON", "MORE", "MOSS", "MOST", "MUSE", "MUST", "MUTE", "NAME", "NANA", "NEAR", "NEAT", "NEED", "NEON", "NEST",
+        "NEWS", "NINE", "NONE", "NOOK", "NOON", "NORM", "NOSE", "NOTE", "NOUN", "ODDS", "ODOR", "OMEN", "OMIT", "ONTO", "OURS",
+        "RAGE", "RAID", "RAIN", "RAKE", "RANK", "RARE", "RATE", "READ", "REAR", "REIN", "RENT", "REST", "RIDE", "RIND", "RING",
+        "RIOT", "RISE", "RISK", "RITE", "ROAD", "ROAM", "ROAR", "ROOM", "ROOT", "ROSE", "ROUT", "RUDE", "RUIN", "RUST", "SAGA",
+        "SAGE", "SAID", "SAKE", "SAME", "SAND", "SANE", "SEAT", "SEED", "SEEK", "SEEM", "SEMI", "SEND", "SIDE", "SIGN", "SING",
+        "SINK", "SITE", "SKID", "SKIM", "SKIN", "SMOG", "SNOW", "SNUG", "SOAK", "SOAR", "SODA", "SOME", "SONG", "SOON", "SORE",
+        "SORT", "SOUR", "STAR", "STEM", "STEW", "STIR", "STUD", "STUN", "SUIT", "SURE", "SWAN", "SWIM", "TAKE", "TAME", "TANK",
+        "TART", "TASK", "TAUT", "TEAM", "TEAR", "TEEN", "TEND", "TENT", "TERM", "TEST", "TIDE", "TIME", "TINT", "TIRE", "TONE",
+        "TOSS", "TOTE", "TOUR", "TOWN", "TRAM", "TREE", "TRIM", "TRIO", "TROT", "TRUE", "TUNA", "TUNE", "TURN", "TWIG", "TWIN",
+        "UNDO", "UNIT", "URGE", "USED", "USER", "WADE", "WAGE", "WAIT", "WAKE", "WAND", "WANT", "WARD", "WARE", "WARM", "WARN",
+        "WEAK", "WEAR", "WEED", "WEEK", "WEST", "WIDE", "WIND", "WINE", "WING", "WIRE", "WISE", "WOOD", "WORD", "WORK", "WORM",
+        "WORN", "WRIT"
+        ]
+      },
+      level7: {//HVFLPJ
+        wordList: [
+        "EH", "HE", "TV", "ELF", "EVE", "FEE", "JET", "LET", "PET", "THE", "FEEL", "FLEE", "HEEL", "HELL", "HELP",
+        "LEFT", "PEEL", "PEEP", "TELL","HI", "IF", "IN", "FIN", "HIP", "ILL", "INN", "LIP", "NIL", "PIN", "FILL", "FLIP", "HILL", "PILL",
+        "AH", "ALL", "APP", "HAM", "HMM", "JAM", "LAP", "MAP", "PAL", "FALL", "FLAP", "HALF", "HALL", "JAVA",
+        "LAMP", "MALL", "PALM", "PAPA"
+        ]
+      },
+      level8: {//EIASURWHVFLPJ
+        wordList: [
+        "AH", "AS", "EH", "ER", "EU", "HE", "HI", "IF", "IS", "UH", "UP", "US", "WE", "AIR", "ALE",
+        "ALL", "APE", "APP", "ASH", "ASS", "AWE", "EAR", "ELF", "ERA", "ERR", "EVE", "FAR", "FEE", "FEW", "FLU",
+        "FUR", "HER", "HIP", "HIS", "HUE", "HUH", "ILL", "JAR", "JAW", "LAP", "LAW", "LIE", "LIP", "PAL", "PAW",
+        "PEA", "PER", "PIE", "PUP", "RAW", "RIP", "SAW", "SEA", "SEE", "SEW", "SHE", "SIP", "SIR", "SPA", "SUE",
+        "SUP", "USE", "VIA", "VIE", "WAR", "WEE", "AREA", "ASIA", "AURA", "EASE", "ELSE", "EVER", "EVIL", "FAIL", "FAIR",
+        "FALL", "FARE", "FEAR", "FEEL", "FILE", "FILL", "FIRE", "FISH", "FIVE", "FLAP", "FLAW", "FLEE", "FLIP", "FREE", "FUEL",
+        "FULL", "FUSE", "FUSS", "HAIL", "HAIR", "HALF", "HALL", "HAUL", "HAVE", "HEAL", "HEAP", "HEAR", "HEEL", "HELL", "HELP",
+        "HERE", "HERS", "HILL", "HIRE", "HURL", "HUSH", "IRIS", "ISLE", "JAIL", "JAVA", "JEER", "LEAF", "LEAP", "LESS", "LIAR",
+        "LIFE", "LIVE", "LULL", "LURE", "LUSH", "PAIR", "PALE", "PAPA", "PASS", "PEAR", "PEEL", "PEEP", "PEER", "PIER", "PILE",
+        "PILL", "PIPE", "PISS", "PLEA", "PLUS", "PUFF", "PULL", "PULP", "PURE", "PUSH", "RAIL", "RAPE", "RARE", "RAVE", "REAL",
+        "REAP", "REAR", "REEL", "RIPE", "RISE", "RULE", "RUSH", "SAFE", "SAIL", "SALE", "SASH", "SAVE", "SEAL", "SELF", "SELL",
+        "SHIP", "SLAP", "SLIP", "SPUR", "SURE", "SURF", "SWAP", "USER", "VASE", "VEER", "VEIL", "VIEW", "VILE", "VISA", "WAIL",
+        "WALL", "WARE", "WASH", "WASP", "WAVE", "WEAR", "WEEP", "WELL", "WHIP", "WIFE", "WILL", "WIPE", "WIRE", "WISE", "WISH",
+        "WRAP"
+        ]
+      },
+      level9: {//BXCYZQ
+        wordList: [
+        "BE", "BY", "BEE", "BET", "BYE", "EBB", "ETC", "EYE", "YET", "TEXT",
+        "IN", "BIN", "ICY", "INN", "ZINC","AM", "AX", "CM", "MY", "BAY", "CAB", "CAY", "MAY", "YAM", "BABY"
+        ]
+      },
+      level10: {//TNMDKGOBXCYZQ
+        wordList: [
+        "BY", "CM", "DO", "GO", "KM", "MY", "NO", "OK", "ON", "OX", "TO", "YO", "BOG", "BOX", "BOY",
+        "CON", "COT", "DOG", "DON", "DOT", "GOD", "GYM", "MOB", "MOM", "NOD", "NOT", "ODD", "TON", "TOO", "TOY",
+        "ZOO", "BODY", "BOMB", "BOND", "BONY", "BOOK", "BOOM", "BOOT", "COCK", "COMB", "COOK", "COZY", "DOCK", "DOOM", "GONG",
+        "GOOD", "KNOB", "KNOT", "KOOK", "MOCK", "MONK", "MOOD", "MOON", "NOOK", "NOON", "ONTO", "ONYX", "TOMB", "ZOOM"
+        ]
+      },
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const level = urlParams.get('level') || 'level1';
+    const levelNum = level.replace('level', '');
+
+    const wordList = levelData[level]?.wordList || levelData['level1'].wordList;
+    
+    document.querySelector('h1').textContent = `🔤 単語クイズ：レベル${levelNum}`;
+    //document.querySelector('#hintImage img').src = `morse_tree_${level}.png`;
+        // ヒントの画像
+    document.getElementById('hintImg').src = `images/morse_tree_${level}.png`;
+
+
+    const modalContent = document.querySelector('.modal-content');
+
+    const letterButton = document.createElement('button');
+    letterButton.innerText = '🅰 １文字へ';
+    letterButton.onclick = () => {
+      location.href = `letter.html?level=level${levelNum}`;
+    };
+    modalContent.appendChild(letterButton);
+    
+    const karutaButton = document.createElement('button');
+    karutaButton.innerText = '🃏 かるたへ';
+    karutaButton.onclick = () => {
+      location.href = `karuta.html?level=level${levelNum}`;
+    };
+    modalContent.appendChild(karutaButton);
+
+
+
+
+    //const wordList = ['EAT', 'MAN', 'ANT', 'TEN', 'NET', 'MINE', 'NAME', 'TEAM', 'ITEM', 'TIME', 'TEA'];
+    let quizOrder = [];
+    let currentIndex = 0;
+    let correctCount = 0;
+    let currentCode = '';
+
+    function replayMorse() {
+      if (currentCode) playMorse(currentCode);
+    }
+
+    function playTone(duration) {
+      const oscillator = context.createOscillator();
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(frequency, context.currentTime);
+      oscillator.connect(context.destination);
+      oscillator.start();
+      oscillator.stop(context.currentTime + duration / 1000);
+    }
+
+    async function playMorse(code) {
+      const letters = code.split(' ');
+      for (const letter of letters) {
+        for (const symbol of letter) {
+          if (symbol === '.') {
+            playTone(unitTime);
+            await sleep(unitTime);
+          } else if (symbol === '-') {
+            playTone(unitTime * 3);
+            await sleep(unitTime * 3);
+          }
+          await sleep(unitTime);
+        }
+        await sleep(unitTime * 3);
+      }
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function wordToMorse(word) {
+      return word.split('').map(char => morseMap[char]).join(' ');
+    }
+
+    function startGame() {
+      quizOrder = shuffle([...wordList]).slice(0, totalQuestions);
+      currentIndex = 0;
+      correctCount = 0;
+      document.getElementById('score').textContent = '';
+      document.getElementById('result').textContent = '';
+      document.getElementById('startBtn').textContent = '🔄 はじめから';
+      document.getElementById('replayBtn').style.display = 'inline-block';
+      document.querySelector('.level-card').style.display = 'block';
+      nextQuestion();
+    }
+
+    function nextQuestion() {
+      if (currentIndex >= quizOrder.length) {
+        document.getElementById('question').textContent = '🎉 終了！おつかれさま！';
+        document.getElementById('choices').innerHTML = '';
+        document.getElementById('score').textContent = `正解数：${correctCount} / ${quizOrder.length}`;
+        document.getElementById('replayBtn').disabled = true;
+        document.getElementById('replayBtn').style.display = 'none';
+        document.getElementById('winModal').style.display = 'flex';
+        return;
+      }
+
+      const word = quizOrder[currentIndex];
+      const code = wordToMorse(word);
+      currentCode = code;
+      playMorse(code);
+      document.getElementById('replayBtn').disabled = false;
+
+      document.getElementById('question').textContent =
+        `問題 ${currentIndex + 1}： ${code
+          .split(' ')
+          .map(c => c.replace(/\./g, '・').replace(/-/g, '－'))
+          .join('　')}`;
+
+      showChoices(word);
+    }
+
+    function showChoices(correct) {
+      const shuffled = shuffle([...quizOrder]);
+      const container = document.getElementById('choices');
+      container.innerHTML = '';
+      shuffled.forEach(word => {
+        const btn = document.createElement('button');
+        btn.textContent = word;
+
+        btn.onclick = () => {
+          const result = document.getElementById('result');
+
+          // ✅ 表示スペースを確保しつつ、表示する！
+          result.style.visibility = 'visible';
+
+          if (word === correct) {
+            result.textContent = '⭕ 正解！';
+            correctCount++;
+          } else {
+            result.textContent = `❌ 不正解… 正解は ${correct} でした`;
+          }
+
+          currentIndex++;
+
+          setTimeout(() => {
+            // ✅ 表示は消すけどスペースは残す！
+            result.style.visibility = 'hidden';
+            result.textContent = '';
+            nextQuestion();
+          }, 1000);
+        };
+
+        container.appendChild(btn);
+      });
+    }
+
+    function toggleHint() {
+      const hint = document.getElementById('hintImage');
+      const isHidden = window.getComputedStyle(hint).display === 'none';
+      hint.style.display = isHidden ? 'block' : 'none';
+    }
+  </script>
+</body>
+</html>

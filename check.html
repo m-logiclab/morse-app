@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>モールス単語チェッカー</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+
+    textarea, input {
+      width: 80%;
+      padding: 10px;
+      margin: 12px 0;
+      font-size: 1em;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>📝 モールス単語チェッカー</h1>
+
+  <!-- <label>つかう文字（例：EIATNM）</label><br>
+  <input type="text" id="allowedLetters" placeholder="使用可能な文字を入力"><br> -->
+  <label for="allowedLetters">つかう文字（例：EIATNM）</label><br>
+  <input type="text" id="allowedLetters"placeholder="使用可能な文字を入力"><br>
+
+  <!-- <label>チェックする単語（改行区切り）</label><br>
+  <textarea id="inputWords" rows="8" placeholder="ここに単語を貼り付け"></textarea><br> -->
+  <label for="inputWords">チェックする単語（改行区切り）</label><br>
+  <textarea id="inputWords" rows="8" placeholder="ここに単語を貼り付け"></textarea><br>
+
+
+  <button onclick="checkWords()">✅ チェック</button>
+  <br>
+  
+  <button id="copyButton" onclick="copyResult()" style="display:none">📋 コピー</button>
+  <div id="copyMessage" style="margin-top:10px; color:#00796b; font-weight:bold;"></div>
+
+
+
+  <div id="result"></div>
+
+  <script>
+
+function formatWordList(words, chunkSize = 10) {
+  const chunks = [];
+  for (let i = 0; i < words.length; i += chunkSize) {
+    const chunk = words.slice(i, i + chunkSize);
+    chunks.push(`  "${chunk.join('", "')}"`);
+  }
+  return `wordList: [\n${chunks.join(',\n')}\n]`;
+}
+
+function checkWords() {
+  try {
+    const allowedRaw = document.getElementById('allowedLetters').value;
+    const inputRaw = document.getElementById('inputWords').value;
+
+    const allowed = allowedRaw.toUpperCase().replace(/[^A-Z]/g, '');
+    const input = inputRaw.toUpperCase().split(/\s+/).filter(w => w);
+
+    const validWords = input.filter(word =>
+      word.split('').every(char => allowed.includes(char))
+    );
+
+    const resultText = formatWordList(validWords, 15);
+
+    const resultBox = document.getElementById('result');
+    resultBox.innerText = resultText;
+    resultBox.style.visibility = 'visible';
+
+    document.getElementById('copyButton').style.display = 'inline-block';
+    document.getElementById('copyMessage').textContent = '';
+  } catch (err) {
+    console.error('❌ エラーが発生しました:', err);
+  }
+}
+
+function copyResult() {
+  const resultBox = document.getElementById('result');
+  const text = resultBox.innerText; // ✅ ← ここを修正！
+  const messageBox = document.getElementById('copyMessage');
+
+  if (!text) {
+    messageBox.textContent = 'コピーする内容がありません';
+    return;
+  }
+
+  navigator.clipboard.writeText(text)
+    .then(() => {
+      messageBox.textContent = '✅ コピーしました！';
+      setTimeout(() => {
+        messageBox.textContent = '';
+      }, 2000);
+    })
+    .catch(err => {
+      console.error('❌ コピーに失敗しました:', err);
+      messageBox.textContent = 'コピーに失敗しました';
+    });
+}
+
+
+  //10文字で改行
+  function formatWordList(words, chunkSize = 10) {
+    const chunks = [];
+    for (let i = 0; i < words.length; i += chunkSize) {
+      const chunk = words.slice(i, i + chunkSize);
+      chunks.push(`  "${chunk.join('", "')}"`);
+    }
+    return `wordList: [\n${chunks.join(',\n')}\n]`;
+  }
+
+  </script>
+
+</body>
+</html>

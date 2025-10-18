@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>モールスツリー</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f0f8ff;
+      text-align: center;
+    }
+
+    .level {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .level-1 { gap: 470px; }
+    .level-2 { gap: 200px; }
+    .level-3 { gap: 72.5px; }
+    .level-4 { gap: 5px; }
+
+button {
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: none;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.1s ease-in-out;
+  line-height: 1.2;
+  min-width: 60px; /* 👈 ここがポイント！ */
+  text-align: center;
+}
+button .morse {
+  font-size: 0.50em; /* 少し小さくして幅を抑える */
+  color: #555;
+  display: block;
+  margin-top: 2px;
+  line-height: 1.1;
+}
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    button.empty {
+      background-color: transparent;
+      box-shadow: none;
+      cursor: default;
+      color: transparent;
+      border: none;
+      padding: 10px 16px;
+      font-size: 1em;
+      font-weight: bold;
+    }
+
+    .dot {
+      background-color: #b2ebf2;
+      color: #004d40;
+    }
+
+    .dash {
+      background-color: #f8bbd0;
+      color: #880e4f;
+    }
+
+    .node {
+      position: relative;
+      display: inline-block;
+    }
+
+    .line-container {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      height: 20px;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .node.wide .line-container { width: 160px; }
+    .node.medium .line-container { width: 80px; }
+    .node.narrow .line-container { width: 50px; }
+
+    .line {
+      width: 2px;
+      height: 20px;
+      background-color: #888;
+    }
+
+    .line.left { transform: rotate(45deg); }
+    .line.right { transform: rotate(-45deg); }
+
+
+
+
+  </style>
+</head>
+<body>
+
+<div class="level level-1">
+  <div class="node wide">
+    <button class="dot" onclick="playMorse('.')">
+      E<br><span class="morse">・</span>
+    </button>
+    <div class="line-container">
+      <div class="line left"></div>
+      <div class="line right"></div>
+    </div>
+  </div>
+
+  <div class="node wide">
+    <button class="dash" onclick="playMorse('-')">
+      T<br><span class="morse">－</span>
+    </button>
+    <div class="line-container">
+      <div class="line left"></div>
+      <div class="line right"></div>
+    </div>
+  </div>
+</div>
+
+
+
+ <div class="level level-2">
+  <div class="node medium">
+    <button class="dot" onclick="playMorse('..')">
+      I<br><span class="morse">・・</span>
+    </button>
+    <div class="line-container">
+      <div class="line left"></div>
+      <div class="line right"></div>
+    </div>
+  </div>
+
+  <div class="node medium">
+    <button class="dash" onclick="playMorse('.-')">
+      A<br><span class="morse">・－</span>
+    </button>
+    <div class="line-container">
+      <div class="line left"></div>
+      <div class="line right"></div>
+    </div>
+  </div>
+
+  <div class="node medium">
+    <button class="dot" onclick="playMorse('-.')">
+      N<br><span class="morse">－・</span>
+    </button>
+    <div class="line-container">
+      <div class="line left"></div>
+      <div class="line right"></div>
+    </div>
+  </div>
+
+  <div class="node medium">
+    <button class="dash" onclick="playMorse('--')">
+      M<br><span class="morse">－－</span>
+    </button>
+    <div class="line-container">
+      <div class="line left"></div>
+      <div class="line right"></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="level level-3">
+  <div class="node narrow">
+    <button class="dot" onclick="playMorse('...')">
+      S<br><span class="morse">・・・</span>
+    </button>
+    <div class="line-container">
+      <div class="line left"></div>
+      <div class="line right"></div>
+    </div>
+  </div>
+
+  <div class="node narrow">
+    <button class="dash" onclick="playMorse('..-')">
+      U<br><span class="morse">・・－</span>
+    </button>
+    <div class="line-container">
+      <div class="line left"></div>
+      <div class="line right"></div>
+    </div>
+  </div>
+
+  <div class="node narrow">
+    <button class="dot" onclick="playMorse('.-.')">
+      R<br><span class="morse">・－・</span>
+    </button>
+    <div class="line-container">
+      <div class="line left"></div>
+      <div class="line right"></div>
+    </div>
+  </div>
+
+  <div class="node narrow">
+    <button class="dash" onclick="playMorse('.--')">
+      W<br><span class="morse">・－－</span>
+    </button>
+    <div class="line-container">
+      <div class="line left"></div>
+      <div class="line right"></div>
+    </div>
+  </div>
+
+  <div class="node narrow">
+    <button class="dot" onclick="playMorse('-..')">
+      D<br><span class="morse">－・・</span>
+    </button>
+    <div class="line-container">
+      <div class="line left"></div>
+      <div class="line right"></div>
+    </div>
+  </div>
+
+  <div class="node narrow">
+    <button class="dash" onclick="playMorse('-.-')">
+      K<br><span class="morse">－・－</span>
+    </button>
+    <div class="line-container">
+      <div class="line left"></div>
+      <div class="line right"></div>
+    </div>
+  </div>
+
+  <div class="node narrow">
+    <button class="dot" onclick="playMorse('--.')">
+      G<br><span class="morse">－－・</span>
+    </button>
+    <div class="line-container">
+      <div class="line left"></div>
+      <div class="line right"></div>
+    </div>
+  </div>
+
+  <div class="node narrow">
+    <button class="dash" onclick="playMorse('---')">
+      O<br><span class="morse">－－－</span>
+    </button>
+    <div class="line-container">
+      <div class="line left"></div>
+      <div class="line right"></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="level level-4">
+  <button class="dot" onclick="playMorse('....')">
+    H<br><span class="morse">・・・・</span>
+  </button>
+  <button class="dash" onclick="playMorse('...-')">
+    V<br><span class="morse">・・・－</span>
+  </button>
+  <button class="dot" onclick="playMorse('..-.')">
+    F<br><span class="morse">・・－・</span>
+  </button>
+  <button class="empty" disabled>　</button>
+  <button class="dash" onclick="playMorse('.-..')">
+    L<br><span class="morse">・－・・</span>
+  </button>
+  <button class="empty" disabled>　</button>
+  <button class="dot" onclick="playMorse('.--.')">
+    P<br><span class="morse">・－－・</span>
+  </button>
+  <button class="dash" onclick="playMorse('.---')">
+    J<br><span class="morse">・－－－</span>
+  </button>
+  <button class="dot" onclick="playMorse('-...')">
+    B<br><span class="morse">－・・・</span>
+  </button>
+  <button class="dash" onclick="playMorse('-..-')">
+    X<br><span class="morse">－・・－</span>
+  </button>
+  <button class="dot" onclick="playMorse('-.-.')">
+    C<br><span class="morse">－・－・</span>
+  </button>
+  <button class="dash" onclick="playMorse('-.--')">
+    Y<br><span class="morse">－・－－</span>
+  </button>
+  <button class="dot" onclick="playMorse('--..')">
+    Z<br><span class="morse">－－・・</span>
+  </button>
+  <button class="dash" onclick="playMorse('--.-')">
+    Q<br><span class="morse">－－・－</span>
+  </button>
+  <button class="empty" disabled>　</button>
+  <button class="empty" disabled>　</button>
+</div>
+
+<script>
+function playMorse(code) {
+  const context = new (window.AudioContext || window.webkitAudioContext)();
+  let time = context.currentTime;
+
+  for (let char of code) {
+    const osc = context.createOscillator();
+    const gain = context.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.value = 600; // モールス音の周波数
+
+    osc.connect(gain);
+    gain.connect(context.destination);
+
+    // ドットとダッシュの長さ
+    const duration = char === '.' ? 0.1 : 0.3;
+
+    osc.start(time);
+    osc.stop(time + duration);
+
+    time += duration + 0.1; // 音の間隔
+  }
+}
+</script>
+
+
+
+</body>
+</html>

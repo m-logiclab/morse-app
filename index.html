@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>モールスチャレンジ！</title>
+  <link rel="manifest" href="manifest.json">
+  <!-- フォント読み込み -->
+  <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=M+PLUS+1&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      text-align: center;
+      font-family: 'M PLUS 1', sans-serif;
+      background-color: #f0fbfc;
+    }
+
+    h1, .title {
+      font-family: 'Kosugi Maru', sans-serif;
+    }
+
+    .level-card {
+      display: block;
+      border-radius: 16px;
+      overflow: hidden;
+      text-decoration: none;
+      color: #006064;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: #ffffff;
+    }
+
+    .level-card h2 {
+      margin: 0 0 12px; /* ← 下に12pxの余白を追加！ */
+      font-size: 1.4em;
+    }
+
+
+    .level-card p {
+      margin: 24px 0; /* ← 上下に12pxの余白を追加！ */
+      font-size: 1.1em;
+    }
+
+
+    .mode-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .mode-buttons button {
+      background-color: #e0f7fa;
+      color: #006064;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      min-width: 100px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: transform 0.1s ease-in-out;
+    }
+
+    .mode-buttons button:hover {
+      transform: scale(1.05);
+      background-color: #ffe0b2;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>モールスチャレンジ！</h1>
+
+  <div class="level-card">
+    <h2>🔰 レベル1</h2>
+    <p>きほんの6文字をおぼえよう！<br><strong>ETIANM</strong></p>
+    <div class="mode-buttons">
+      <button onclick="location.href='letter.html?level=level1'">🅰 １文字</button>
+      <button onclick="location.href='karuta.html?level=level1'">🃏 かるた</button>
+      <button onclick="location.href='word.html?level=level1'">🔤 単語</button>
+    </div>
+  </div>
+
+  <div class="level-card">
+    <h2>🎯 レベル2</h2>
+    <p>Ｅグループの７文字<br><strong>EIASURW</strong></p>
+    <div class="mode-buttons">
+      <button onclick="location.href='letter.html?level=level2'">🅰 １文字</button>
+      <button onclick="location.href='karuta.html?level=level2'">🃏 かるた</button>
+      <button onclick="location.href='word.html?level=level2'">🔤 単語</button>
+    </div>
+  </div>
+
+  <div class="level-card">
+    <h2>🌟 レベル3</h2>
+    <p>Ｅグループの７文字 プラス TNM<br><strong>EIASURW + TNM</strong></p>
+    <div class="mode-buttons">
+      <button onclick="location.href='letter.html?level=level3'">🅰 １文字</button>
+      <button onclick="location.href='karuta.html?level=level3'">🃏 かるた</button>
+      <button onclick="location.href='word.html?level=level3'">🔤 単語</button>
+    </div>
+  </div>
+
+  <div class="level-card">
+    <h2>🚀 レベル4</h2>
+    <p>Ｔグループの７文字<br><strong>TNMDKGO</strong></p>
+    <div class="mode-buttons">
+      <button onclick="location.href='letter.html?level=level4'">🅰 １文字</button>
+      <button onclick="location.href='karuta.html?level=level4'">🃏 かるた</button>
+      <button onclick="location.href='word.html?level=level4'">🔤 単語</button>
+    </div>
+  </div>
+
+  <div class="level-card">
+    <h2>🎓 レベル5</h2>
+    <p>Ｔグループの７文字 プラス EIA<br><strong>TNMDKGO + EIA</strong></p>
+    <div class="mode-buttons">
+      <button onclick="location.href='letter.html?level=level5'">🅰 １文字</button>
+      <button onclick="location.href='karuta.html?level=level5'">🃏 かるた</button>
+      <button onclick="location.href='word.html?level=level5'">🔤 単語</button>
+    </div>
+  </div>
+
+  <div class="level-card">
+    <h2>🧠 レベル6</h2>
+    <p>ここまでのすべての文字<br><strong>EIASURW + TNMDKGO</strong></p>
+    <div class="mode-buttons">
+      <button onclick="location.href='letter.html?level=level6'">🅰 １文字</button>
+      <button onclick="location.href='karuta.html?level=level6'">🃏 かるた</button>
+      <button onclick="location.href='word.html?level=level6'">🔤 単語</button>
+    </div>
+  </div>
+
+  <div class="level-card">
+    <h2>🎮 レベル7</h2>
+    <p>Ｅグループさいごの６文字<br><strong>HVFLPJ</strong></p>
+    <div class="mode-buttons">
+      <button onclick="location.href='letter.html?level=level7'">🅰 １文字</button>
+      <button onclick="location.href='karuta.html?level=level7'">🃏 かるた</button>
+      <button onclick="location.href='word.html?level=level7'">🔤 単語</button>
+    </div>
+  </div>
+
+  <div class="level-card">
+    <h2>📡 レベル8</h2>
+    <p>Ｅグループのすべての文字<br><strong>EIASURW + HVFLPJ</strong></p>
+    <div class="mode-buttons">
+      <button onclick="location.href='letter.html?level=level8'">🅰 １文字</button>
+      <button onclick="location.href='karuta.html?level=level8'">🃏 かるた</button>
+      <button onclick="location.href='word.html?level=level8'">🔤 単語</button>
+    </div>
+  </div>
+
+  <div class="level-card">
+    <h2>🧩 レベル9</h2>
+    <p>Ｔグループさいごの６文字<br><strong>BXCYZQ</strong></p>
+    <div class="mode-buttons">
+      <button onclick="location.href='letter.html?level=level9'">🅰 １文字</button>
+      <button onclick="location.href='karuta.html?level=level9'">🃏 かるた</button>
+      <button onclick="location.href='word.html?level=level9'">🔤 単語</button>
+    </div>
+  </div>
+
+  <div class="level-card">
+    <h2>🏆 レベル10</h2>
+    <p>Ｔグループのすべての文字<br><strong>TNMDKGO + BXCYZQ</strong></p>
+    <div class="mode-buttons">
+      <button onclick="location.href='letter.html?level=level10'">🅰 １文字</button>
+      <button onclick="location.href='karuta.html?level=level10'">🃏 かるた</button>
+      <button onclick="location.href='word.html?level=level10'">🔤 単語</button>
+    </div>
+  </div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('Service Worker registered!', reg))
+        .catch(err => console.error('Service Worker error:', err));
+    });
+  }
+</script>
+
+
+</body>
+
+</html>

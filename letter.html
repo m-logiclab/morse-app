@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>モールスチャレンジ！：１文字モールス</title>
+
+  <!-- フォント読み込み -->
+  <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=M+PLUS+1&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+  <h1 id="pageTitle">１文字モールス</h1>
+
+  <p>再生されるモールス音と表示された符号（・－）から、対応する文字を選んでください。</p>
+  <button id="startBtn" onclick="startGame()">ゲーム開始</button>
+  <div class="level-card">
+
+    <div id="questionRow">
+      <p id="question"></p>
+      <button id="replayBtn" onclick="replayMorse()" disabled>🔈</button>
+    </div>
+
+    <p id="result"></p>
+    <div id="choices"></div>
+
+    <p id="score"></p>
+    
+    <button onclick="toggleHint()">🔍 ヒント</button>
+    <div id="hintImage">
+      <!-- <img src="morse_tree_lv1.png" alt="モールス単語ヒント"> -->
+      <img id="hintImg" src="" alt="モールスヒント">
+    </div>
+
+  </div>
+
+  <div class="back-home">
+    <button onclick="location.href='index.html'">🏠 ホームにもどる</button>
+  </div>
+
+  <div id="winModal" class="modal">
+  <div class="modal-content">
+    🎉 クリア！おめでとう！<br><br>
+    <button onclick="location.reload()">🔁 もういちど</button>
+    <button onclick="location.href='index.html'">🏠 ホームにもどる</button>
+    <!-- 単語クイズボタンはJSで追加 -->
+  </div>
+
+
+  <script>
+
+    const levelData = {
+      level1: {
+        morseMap: {
+          'E': '.',   // ・
+          'I': '..',  // ・・
+          'A': '.-',  // ・－
+          'T': '-',
+          'N': '-.',
+          'M': '--'
+        }
+      },
+      level2: {
+        morseMap: {
+          'E': '.',   // ・
+          'I': '..',  // ・・
+          'A': '.-',  // ・－
+          'S': '...', // ・・・
+          'U': '..-', // ・・－
+          'R': '.-.', // ・－・
+          'W': '.--'  // ・－－
+        }
+      },
+      level3: {
+        morseMap: {
+          'E': '.',   // ・
+          'I': '..',  // ・・
+          'A': '.-',  // ・－
+          'S': '...', // ・・・
+          'U': '..-', // ・・－
+          'R': '.-.', // ・－・
+          'W': '.--',  // ・－－
+          'T': '-',
+          'N': '-.',
+          'M': '--'
+        }
+      },
+      level4: {
+        morseMap: {
+          'T': '-',    // －
+          'N': '-.',   // －・
+          'M': '--',   // －－
+          'D': '-..',  // －・・
+          'K': '-.-',  // －・－
+          'G': '--.',  // －－・
+          'O': '---'   // －－－
+        }
+      },
+      level5: {
+        morseMap: {
+          'T': '-',    // －
+          'N': '-.',   // －・
+          'M': '--',   // －－
+          'D': '-..',  // －・・
+          'K': '-.-',  // －・－
+          'G': '--.',  // －－・
+          'O': '---',  // －－－
+          'E': '.',   // ・
+          'I': '..',  // ・・
+          'A': '.-'  // ・－
+        }
+      },
+      level6: {
+        morseMap: {
+          'E': '.',   // ・
+          'I': '..',  // ・・
+          'A': '.-',  // ・－
+          'S': '...', // ・・・
+          'U': '..-', // ・・－
+          'R': '.-.', // ・－・
+          'W': '.--',  // ・－－
+          'T': '-',    // －
+          'N': '-.',   // －・
+          'M': '--',   // －－
+          'D': '-..',  // －・・
+          'K': '-.-',  // －・－
+          'G': '--.',  // －－・
+          'O': '---'   // －－－
+        }
+      },
+      level7: {
+        morseMap: {
+          'H': '....',   // ・・・・
+          'V': '...-',   // ・・・－
+          'F': '..-.',   // ・・－・
+          'L': '.-..',   // ・－・・
+          'P': '.--.',   // ・－－・
+          'J': '.---'    // ・－－－
+        }
+      },
+      level8: {
+        morseMap: {
+          'E': '.',   // ・
+          'I': '..',  // ・・
+          'A': '.-',  // ・－
+          'S': '...', // ・・・
+          'U': '..-', // ・・－
+          'R': '.-.', // ・－・
+          'W': '.--',  // ・－－
+          'H': '....',   // ・・・・
+          'V': '...-',   // ・・・－
+          'F': '..-.',   // ・・－・
+          'L': '.-..',   // ・－・・
+          'P': '.--.',   // ・－－・
+          'J': '.---'   // ・－－－
+        }
+      },
+      level9: {
+        morseMap: {
+          'B': '-...',  // －・・・
+          'X': '-..-',  // －・・－
+          'C': '-.-.',  // －・－・
+          'Y': '-.--',  // －・－－
+          'Z': '--..',  // －－・・
+          'Q': '--.-'   // －－・－
+        }
+      },
+      level10: {
+        morseMap: {
+          'T': '-',    // －
+          'N': '-.',   // －・
+          'M': '--',   // －－
+          'D': '-..',  // －・・
+          'K': '-.-',  // －・－
+          'G': '--.',  // －－・
+          'O': '---',  // －－－
+          'B': '-...',  // －・・・
+          'X': '-..-',  // －・・－
+          'C': '-.-.',  // －・－・
+          'Y': '-.--',  // －・－－
+          'Z': '--..',  // －－・・
+          'Q': '--.-'   // －－・－
+        }
+      },
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const level = urlParams.get('level') || 'level1';
+    // ✅ morseMap をレベルに応じて切り替え
+    let morseMap = levelData[level]?.morseMap || levelData['level1'].morseMap;
+
+    // ✅ 表示用に数字だけ抜き出す（例：level2 → 2）
+    const levelNum = level.replace('level', '');
+
+
+    const modalContent = document.querySelector('.modal-content');
+
+    const karutaButton = document.createElement('button');
+    karutaButton.innerText = '🃏 かるたへ';
+    karutaButton.onclick = () => {
+      location.href = `karuta.html?level=level${levelNum}`;
+    };
+    modalContent.appendChild(karutaButton);
+
+    const wordButton = document.createElement('button');
+    wordButton.innerText = '🔤 単語へ';
+    wordButton.onclick = () => {
+      location.href = `word.html?level=level${levelNum}`;
+    };
+    modalContent.appendChild(wordButton);
+
+
+    // ✅ タイトルを書き換える！
+    document.getElementById('pageTitle').textContent = `🅰１文字モールス：レベル${levelNum}`;
+    // ヒントの画像
+    document.getElementById('hintImg').src = `images/morse_tree_${level}.png`;
+
+
+    const context = new (window.AudioContext || window.webkitAudioContext)();
+    const unitTime = 1200 / 15;
+    const frequency = 600;
+
+    // const morseMap = {
+    //   'E': '.', 'T': '-', 'I': '..', 'A': '.-', 'N': '-.', 'M': '--'
+    // };
+
+    let quizOrder = [];
+    let currentIndex = 0;
+    let correctCount = 0;
+    let currentCode = '';
+
+    function replayMorse() {
+      if (currentCode) playMorse(currentCode);
+    }
+
+    function playTone(duration) {
+      const oscillator = context.createOscillator();
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(frequency, context.currentTime);
+      oscillator.connect(context.destination);
+      oscillator.start();
+      oscillator.stop(context.currentTime + duration / 1000);
+    }
+
+    async function playMorse(code) {
+      for (const symbol of code) {
+        if (symbol === '.') {
+          playTone(unitTime);
+          await sleep(unitTime);
+        } else if (symbol === '-') {
+          playTone(unitTime * 3);
+          await sleep(unitTime * 3);
+        }
+        await sleep(unitTime);
+      }
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function startGame() {
+      quizOrder = shuffle(Object.keys(morseMap));
+      currentIndex = 0;
+      correctCount = 0;
+      document.getElementById('score').textContent = '';
+      document.getElementById('result').textContent = '';
+      document.getElementById('startBtn').textContent = '🔄 はじめからやりなおす';
+      document.getElementById('replayBtn').style.display = 'inline-block';
+
+      // ✅ カードを表示する！
+      document.querySelector('.level-card').style.display = 'block';
+
+      nextQuestion();
+    }
+
+    function nextQuestion() {
+      if (currentIndex >= quizOrder.length) {
+        document.getElementById('question').textContent = '🎉 終了！おつかれさま！';
+        document.getElementById('choices').innerHTML = '';
+        document.getElementById('score').textContent = `正解数：${correctCount} / ${quizOrder.length}`;
+        document.getElementById('replayBtn').disabled = true;
+        document.getElementById('replayBtn').style.display = 'none';
+        document.getElementById('winModal').style.display = 'flex';
+        return;
+      }
+
+      const letter = quizOrder[currentIndex];
+      const code = morseMap[letter];
+      playMorse(code);
+      currentCode = code;
+      document.getElementById('replayBtn').disabled = false;
+      document.getElementById('question').textContent =
+        `問題 ${currentIndex + 1}： ${code.replace(/\./g, '・').replace(/-/g, '－')}`;
+      showChoices(letter);
+    }
+
+
+    function showChoices(correct) {
+      const shuffled = shuffle([...quizOrder]);
+      const container = document.getElementById('choices');
+      container.innerHTML = '';
+      shuffled.forEach(word => {
+        const btn = document.createElement('button');
+        btn.textContent = word;
+
+        btn.onclick = () => {
+          const result = document.getElementById('result');
+
+          // ✅ 表示スペースを確保しつつ、表示する！
+          result.style.visibility = 'visible';
+
+          if (word === correct) {
+            result.textContent = '⭕ 正解！';
+            correctCount++;
+          } else {
+            result.textContent = `❌ 不正解… 正解は ${correct} でした`;
+          }
+
+          currentIndex++;
+
+          setTimeout(() => {
+            // ✅ 表示は消すけどスペースは残す！
+            result.style.visibility = 'hidden';
+            result.textContent = '';
+            nextQuestion();
+          }, 1000);
+        };
+
+        container.appendChild(btn);
+      });
+    }
+
+
+    function toggleHint() {
+      const hint = document.getElementById('hintImage');
+      const isHidden = window.getComputedStyle(hint).display === 'none';
+      hint.style.display = isHidden ? 'block' : 'none';
+    }
+
+    // document.getElementById('winModal').addEventListener('click', () => {
+    //   document.getElementById('winModal').style.display = 'none';
+    // });
+
+  </script>
+</body>
+</html>

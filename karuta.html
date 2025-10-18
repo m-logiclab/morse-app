@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>モールスチャレンジ！：かるた</title>
+  <!-- フォント読み込み -->
+  <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=M+PLUS+1&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .grid {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    /* .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      align-items: flex-start;
+      padding-top: 100px;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 16px;
+      font-size: 1.4em;
+      color: #006064;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    } */
+    .game-button {
+      min-height: 48px;     /* ✅ 高さをそろえる */
+      line-height: 1.2;     /* ✅ 行間をそろえる */
+    }
+
+
+    button:disabled {
+      background-color: #eee;
+      color: #aaa;
+      cursor: default;
+    }
+
+    .selected {
+      background-color: #80deea !important;
+      box-shadow: 0 0 0 3px #4dd0e1 inset;
+    }
+  </style>
+
+
+</head>
+<body>
+  <h1>🃏 モールスかるた</h1>
+  <div class="level-card" style="display:block">
+    
+    <div class="grid">
+      <div id="leftColumn" class="column"></div>
+      <div id="rightColumn" class="column"></div>
+    </div>
+  </div>
+
+<div id="winModal" class="modal">
+<div class="modal-content">
+  🎉 クリア！おめでとう！<br><br>
+  <button onclick="location.reload()">🔁 もういちど</button>
+  <button onclick="location.href='index.html'">🏠 ホームにもどる</button>
+  <!-- 単語クイズボタンはJSで追加 -->
+</div>
+
+</div>
+
+<div class="back-home">
+  <button onclick="location.href='index.html'">🏠 ホームにもどる</button>
+</div>
+
+
+  <script>
+
+
+    const levelData = {
+      level1: {
+        morseMap: {
+          'E': '.',   // ・
+          'I': '..',  // ・・
+          'A': '.-',  // ・－
+          'T': '-',
+          'N': '-.',
+          'M': '--'
+        }
+      },
+      level2: {
+        morseMap: {
+          'E': '.',   // ・
+          'I': '..',  // ・・
+          'A': '.-',  // ・－
+          'S': '...', // ・・・
+          'U': '..-', // ・・－
+          'R': '.-.', // ・－・
+          'W': '.--'  // ・－－
+        }
+      },
+      level3: {
+        morseMap: {
+          'E': '.',   // ・
+          'I': '..',  // ・・
+          'A': '.-',  // ・－
+          'S': '...', // ・・・
+          'U': '..-', // ・・－
+          'R': '.-.', // ・－・
+          'W': '.--',  // ・－－
+          'T': '-',
+          'N': '-.',
+          'M': '--'
+        }
+      },
+      level4: {
+        morseMap: {
+          'T': '-',    // －
+          'N': '-.',   // －・
+          'M': '--',   // －－
+          'D': '-..',  // －・・
+          'K': '-.-',  // －・－
+          'G': '--.',  // －－・
+          'O': '---'   // －－－
+        }
+      },
+      level5: {
+        morseMap: {
+          'T': '-',    // －
+          'N': '-.',   // －・
+          'M': '--',   // －－
+          'D': '-..',  // －・・
+          'K': '-.-',  // －・－
+          'G': '--.',  // －－・
+          'O': '---',  // －－－
+          'E': '.',   // ・
+          'I': '..',  // ・・
+          'A': '.-'  // ・－
+        }
+      },
+      level6: {
+        morseMap: {
+          'E': '.',   // ・
+          'I': '..',  // ・・
+          'A': '.-',  // ・－
+          'S': '...', // ・・・
+          'U': '..-', // ・・－
+          'R': '.-.', // ・－・
+          'W': '.--',  // ・－－
+          'T': '-',    // －
+          'N': '-.',   // －・
+          'M': '--',   // －－
+          'D': '-..',  // －・・
+          'K': '-.-',  // －・－
+          'G': '--.',  // －－・
+          'O': '---'   // －－－
+        }
+      },
+      level7: {
+        morseMap: {
+          'H': '....',   // ・・・・
+          'V': '...-',   // ・・・－
+          'F': '..-.',   // ・・－・
+          'L': '.-..',   // ・－・・
+          'P': '.--.',   // ・－－・
+          'J': '.---'    // ・－－－
+        }
+      },
+      level8: {
+        morseMap: {
+          'E': '.',   // ・
+          'I': '..',  // ・・
+          'A': '.-',  // ・－
+          'S': '...', // ・・・
+          'U': '..-', // ・・－
+          'R': '.-.', // ・－・
+          'W': '.--',  // ・－－
+          'H': '....',   // ・・・・
+          'V': '...-',   // ・・・－
+          'F': '..-.',   // ・・－・
+          'L': '.-..',   // ・－・・
+          'P': '.--.',   // ・－－・
+          'J': '.---'   // ・－－－
+        }
+      },
+      level9: {
+        morseMap: {
+          'B': '-...',  // －・・・
+          'X': '-..-',  // －・・－
+          'C': '-.-.',  // －・－・
+          'Y': '-.--',  // －・－－
+          'Z': '--..',  // －－・・
+          'Q': '--.-'   // －－・－
+        }
+      },
+      level10: {
+        morseMap: {
+          'T': '-',    // －
+          'N': '-.',   // －・
+          'M': '--',   // －－
+          'D': '-..',  // －・・
+          'K': '-.-',  // －・－
+          'G': '--.',  // －－・
+          'O': '---',  // －－－
+          'B': '-...',  // －・・・
+          'X': '-..-',  // －・・－
+          'C': '-.-.',  // －・－・
+          'Y': '-.--',  // －・－－
+          'Z': '--..',  // －－・・
+          'Q': '--.-'   // －－・－
+        }
+      },
+    };
+    const urlParams = new URLSearchParams(window.location.search);
+    const level = urlParams.get('level') || 'level1';
+    // ✅ 表示用に数字だけ抜き出す（例：level2 → 2）
+    const levelNum = level.replace('level', '');
+
+    const modalContent = document.querySelector('.modal-content');
+
+    const quizButton = document.createElement('button');
+    quizButton.innerText = '🔤 単語へ';
+    quizButton.onclick = () => {
+      location.href = `word.html?level=level${levelNum}`;
+    };
+    modalContent.appendChild(quizButton);
+
+    const letterButton = document.createElement('button');
+    letterButton.innerText = '🅰 １文字へ';
+    letterButton.onclick = () => {
+      location.href = `letter.html?level=level${levelNum}`;
+    };
+    modalContent.appendChild(letterButton);
+
+    const fullMap = levelData[level]?.morseMap || levelData['level1'].morseMap;
+    const morseMap = Object.keys(fullMap).length > 7 ? getRandomSubset(fullMap, 7) : fullMap;
+
+    // ✅ morseMap をレベルに応じて切り替え
+    //const morseMap = levelData[level]?.morseMap || levelData['level1'].morseMap;
+
+    // ✅ タイトルもレベル表示に変更（任意）
+    document.querySelector('h1').textContent = `🃏 モールスかるた：レベル${levelNum}`;
+
+    const context = new (window.AudioContext || window.webkitAudioContext)();
+    const frequency = 600;
+    const unitTime = 100;
+
+    function playTone(duration) {
+      const oscillator = context.createOscillator();
+      const gainNode = context.createGain();
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(frequency, context.currentTime);
+      oscillator.connect(gainNode);
+      gainNode.connect(context.destination);
+      gainNode.gain.setValueAtTime(0.5, context.currentTime); // ← 音量調整
+      oscillator.start();
+      oscillator.stop(context.currentTime + duration / 1000);
+    }
+
+    async function playMorse(code) {
+      for (const symbol of code) {
+        if (symbol === '.') {
+          playTone(unitTime);
+          await sleep(unitTime);
+        } else if (symbol === '-') {
+          playTone(unitTime * 3);
+          await sleep(unitTime * 3);
+        }
+        await sleep(unitTime);
+      }
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    const shuffledLetters = Object.keys(morseMap).sort(() => Math.random() - 0.5);
+    const shuffledCodes = Object.values(morseMap).sort(() => Math.random() - 0.5);
+
+    const leftColumn = document.getElementById('leftColumn');
+    const rightColumn = document.getElementById('rightColumn');
+    let selected = [];
+
+    shuffledLetters.forEach(letter => {
+      const btn = document.createElement('button');
+      btn.textContent = letter;
+      btn.dataset.type = 'letter';
+      btn.dataset.value = letter;
+
+// ✅ ここに追加！
+btn.classList.add('game-button');
+
+      btn.addEventListener('click', async () => {
+        await context.resume();
+        handleClick(btn);
+        //playMorse(morseMap[letter]); 文字ボタンでは音を鳴らさない
+      });
+
+      leftColumn.appendChild(btn);
+    });
+
+    shuffledCodes.forEach(code => {
+      const btn = document.createElement('button');
+      //btn.textContent = code;
+      btn.textContent = readableMorse(code); // ← これで見やすく！
+      btn.dataset.type = 'morse';
+      btn.dataset.value = code;
+
+// ✅ ここに追加！
+btn.classList.add('game-button');
+
+      btn.addEventListener('click', async () => {
+        await context.resume();
+        handleClick(btn);
+        playMorse(code);
+      });
+
+      rightColumn.appendChild(btn);
+    });
+
+    function handleClick(btn) {
+      if (btn.disabled || selected.length === 2 || selected.includes(btn)) return;
+
+      btn.classList.add('selected');
+      selected.push(btn);
+
+      if (selected.length === 2) {
+        const [a, b] = selected;
+        const match =
+          a.dataset.type !== b.dataset.type &&
+          morseMap[a.dataset.type === 'letter' ? a.dataset.value : b.dataset.value] ===
+          (a.dataset.type === 'morse' ? a.dataset.value : b.dataset.value);
+
+        setTimeout(() => {
+          if (match) {
+            a.disabled = true;
+            b.disabled = true;
+            a.classList.remove('selected');
+            b.classList.remove('selected');
+            console.log('✅ Correct!');
+          } else {
+            a.classList.remove('selected');
+            b.classList.remove('selected');
+            console.log('❌ Wrong!');
+          }
+          selected = [];
+
+          //const allDisabled = [...document.querySelectorAll('button')].every(btn => btn.disabled);
+const allDisabled = [...document.querySelectorAll('.game-button')].every(btn => btn.disabled);
+
+if (allDisabled) {
+  setTimeout(() => {
+    document.getElementById('winModal').style.display = 'flex';
+  }, 200);
+}
+        }, 500);
+      }
+    }
+
+function readableMorse(code) {
+  return code.replace(/\./g, '・').replace(/-/g, '－');
+}
+
+// document.getElementById('winModal').addEventListener('click', () => {
+//   document.getElementById('winModal').style.display = 'none';
+// });
+
+//morseMap をシャッフルして6個に絞る
+function getRandomSubset(map, count = 6) {
+  const entries = Object.entries(map);
+  const shuffled = entries.sort(() => Math.random() - 0.5);
+  const subset = shuffled.slice(0, count);
+  return Object.fromEntries(subset);
+}
+
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{
+  "name": "モールスチャレンジ",
+  "short_name": "モールス",
+  "description": "モールス符号で遊びながら学べる！カルタ・クイズ・チャレンジが全部入りの教材アプリ",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f0fbfc",
+  "theme_color": "#80deea",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+  {
+    "src": "screenshots/home-desktop.png",
+    "sizes": "1280x720",
+    "type": "image/png",
+    "form_factor": "wide",
+    "label": "ホーム画面：カルタとクイズの選択"
+  },
+  {
+    "src": "screenshots/home-mobile.png",
+    "sizes": "360x640",
+    "type": "image/png",
+    "form_factor": "narrow",
+    "label": "スマホ画面：モールスチャレンジのトップ"
+  }
+]
+
+}
