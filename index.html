@@ -188,7 +188,7 @@
       <button onclick="location.href='word.html?level=level10'">🔤 単語</button>
     </div>
   </div>
-
+<p id="info"></p>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -197,6 +197,12 @@
         .catch(err => console.error('Service Worker error:', err));
     });
   }
+    const info = `
+    CSS表示幅: ${window.innerWidth}px<br>
+    CSS表示高さ: ${window.innerHeight}px<br>
+    デバイスピクセル比: ${window.devicePixelRatio}
+  `;
+  document.getElementById("info").innerHTML = info;
 </script>
 
 
