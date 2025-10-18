@@ -53,7 +53,7 @@
         padding: 1.2rem 2rem;
         min-height: 56px;
         min-width: 90%;
-        margin: 1rem auto;
+        margin: 6px auto;
         display: block;
       }
     }
@@ -256,7 +256,7 @@
     modalContent.appendChild(letterButton);
 
     const fullMap = levelData[level]?.morseMap || levelData['level1'].morseMap;
-    const morseMap = Object.keys(fullMap).length > 7 ? getRandomSubset(fullMap, 7) : fullMap;
+    const morseMap = Object.keys(fullMap).length > 6 ? getRandomSubset(fullMap, 6) : fullMap;
 
     // ✅ morseMap をレベルに応じて切り替え
     //const morseMap = levelData[level]?.morseMap || levelData['level1'].morseMap;

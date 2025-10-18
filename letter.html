@@ -15,7 +15,7 @@
 
   <h1 id="pageTitle">１文字モールス</h1>
 
-  <p>再生されるモールス音と表示された符号（・－）から、対応する文字を選んでください。</p>
+  <p>再生されるモールス音から、対応する文字を選んでください。</p>
   <button id="startBtn" onclick="startGame()">ゲーム開始</button>
   <div class="level-card">
 
@@ -272,7 +272,7 @@
       correctCount = 0;
       document.getElementById('score').textContent = '';
       document.getElementById('result').textContent = '';
-      document.getElementById('startBtn').textContent = '🔄 はじめからやりなおす';
+      document.getElementById('startBtn').textContent = '🔄 はじめから';
       document.getElementById('replayBtn').style.display = 'inline-block';
 
       // ✅ カードを表示する！

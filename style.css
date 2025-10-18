@@ -14,7 +14,7 @@ h1 {
 
 @media (max-width: 600px) {
   p {
-    font-size: 1.2rem;
+    font-size: 1.0rem;
     line-height: 1.6;
   }
 }
@@ -47,12 +47,12 @@ button {
 
 @media (max-width: 600px) {
   button {
-    font-size: 1.4rem;         /* 文字を大きく！ */
-    padding: 1.2rem 2rem;      /* タッチ領域を広げる！ */
-    min-height: 56px;          /* Google推奨サイズ以上に！ */
-    min-width: 90%;            /* 横幅も広げて押しやすく！ */
-    margin: 1rem auto;         /* 余白＆中央寄せ */
-    display: block;            /* 横並びを防ぐ */
+    font-size: 1.2rem;
+    padding: 1rem 1.2rem;
+    min-height: 50px;
+    min-width: 90%;
+    margin: 0 auto;
+    display: block;
   }
 }
 
@@ -79,7 +79,7 @@ button:hover {
 
 @media (max-width: 600px) {
   #question {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     text-align: center;
   }
 
@@ -166,10 +166,10 @@ button:hover {
   font-size: 1.4em;
   color: #006064;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  display: flex;              /* ← これが必要！ */
-  flex-direction: column;     /* ← 縦並びにする！ */
-  align-items: center;        /* ← ボタンを中央揃えにする */
-  gap: 10px;                  /* ← ボタンの間隔をあける */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 .modal-content button {
